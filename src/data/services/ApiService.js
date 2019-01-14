@@ -21,7 +21,7 @@ export const ApiService = {
     },
     delete(endpoint, id){
         return fetch(`${url}${endpoint}?id=${id}`, {
-            method: 'DETELE'
+            method: 'DELETE'
         })
             .then(response => response.json());
     }
