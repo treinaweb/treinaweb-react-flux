@@ -4,7 +4,18 @@ import ToDoItem from './ToDoItem';
 
 class ToDoList extends Component{
     static defaultProps = {
-        items: []
+        items: [],
+        onRemove: () => {}
+    }
+
+    constructor(props){
+        super(props);
+
+        this.remove = this.remove.bind(this);
+    }
+
+    remove(id){
+        this.props.onRemove(id);
     }
 
     render(){
@@ -15,7 +26,10 @@ class ToDoList extends Component{
         return (
             <ul className="todo-list" >
                 {
-                    props.items.map(item => <ToDoItem key={item.id} item={item} />)
+                    props.items.map(item => <ToDoItem 
+                        onRemove={this.remove}    
+                        key={item.id} 
+                        item={item} />)
                 }
             </ul>
         )
