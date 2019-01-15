@@ -3,7 +3,15 @@ import './App.css';
 
 import ToDoList from './views/components/ToDoList';
 import NewToDoItem from './views/components/NewToDoItem';
-import { TodoService } from './data/services/TodoService';
+
+import TodoActions from './data/actions/TodoActions';
+import TodoStore from './data/stores/TodoStore';
+
+async function getTodoState(){
+  return {
+    todoList: await TodoStore.getAll()
+  }
+}
 
 class App extends Component {
   constructor(props){
@@ -12,72 +20,31 @@ class App extends Component {
       todoList: []
     }
 
-    this.add = this.add.bind(this);
-    this.remove = this.remove.bind(this);
-    this.update = this.update.bind(this);
-    this.clear = this.clear.bind(this);
+    this._onChange = this._onChange.bind(this);
+    this._onChange();
   }
 
-  async componentDidMount(){
-    const todoList = await TodoService.list();
-    this.setState({todoList});
+  componentDidMount(){
+    TodoStore.addChangeListener(this._onChange);  
   }
 
-  clear(){
-    const todo = [],
-      done = [],
-      { todoList } = this.state;
-
-    todoList.forEach(item => {
-      if(item.isChecked){
-        done.push(item);
-      }else{
-        todo.push(item);
-      }
-    });
-
-    done.forEach(item => this.remove(item.id));
-    this.setState({todoList: todo});
+  componentWillUnmount(){
+    TodoStore.removeChangeListener(this._onChange);
   }
 
-  add(description){
-    TodoService.create({
-      description,
-      isChecked: false
-    })
-      .then(newItem => {
-        const { todoList } = this.state;
-        todoList.push(newItem);
-        this.setState({todoList});
-      })
-  }
-
-  remove(id){
-    const { todoList } = this.state,
-      itemIndex = todoList.findIndex(item => item.id === id);
-    todoList.splice(itemIndex, 1);
-    TodoService.remove(id);
-    this.setState({todoList});
-  }
-
-  update(newItem){
-    const { todoList } = this.state,
-      itemIndex = todoList.findIndex(item => item.id === newItem.id);
-
-    todoList[itemIndex] = newItem;
-    TodoService.update(newItem);
-    this.setState({todoList});
+  async _onChange(){
+    this.setState(await getTodoState());
   }
 
   render() {
     const { state } = this;
     return (
       <div className="App">
-        <NewToDoItem onAdd={this.add} />
+        <NewToDoItem onAdd={TodoActions.create} />
         <hr />
-        <button className="tw-btn" onClick={this.clear} >Limpar</button>
+        <button className="tw-btn" onClick={TodoActions.clear} >Limpar</button>
         <hr />
-        <ToDoList items={state.todoList} onRemove={this.remove} onUpdate={this.update} />
+        <ToDoList items={state.todoList} onRemove={TodoActions.remove} onUpdate={TodoActions.update} />
       </div>
     );
   }

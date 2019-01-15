@@ -2,7 +2,7 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import Events from 'events';
 import TodoConstants from '../constants/TodoConstants';
 
-import TodoService from '../services/TodoService';
+import { TodoService } from '../services/TodoService';
 
 const Channel = new Events.EventEmitter(),
     CHANGE_EVENT = 'change';
@@ -27,7 +27,7 @@ function updateItem(newItem){
 
 
 function removeItem(id){
-    const itemIndex = todoList.findIndex(item => item.id === id);
+    const itemIndex = _todoList.findIndex(item => item.id === id);
     _todoList.splice(itemIndex, 1);
     return TodoService.remove(id);
 }
@@ -53,7 +53,7 @@ function clearAll(){
 const TodoStore = {
     async getAll(){
         if(_todoList.length === 0){
-            _todoList = await TodoService.getAll();
+            _todoList = await TodoService.list();
         }
         return _todoList;
     },
