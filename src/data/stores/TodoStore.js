@@ -1,3 +1,4 @@
+import AppDispatcher from '../dispatcher/AppDispatcher';
 import Events from 'events';
 import TodoConstants from '../constants/TodoConstants';
 
@@ -91,4 +92,5 @@ async function handleAction(action){
 
 }
 
+TodoStore.dispatchToken = AppDispatcher.register(handleAction);
 export default TodoStore;
