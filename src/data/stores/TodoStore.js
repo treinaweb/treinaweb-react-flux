@@ -1,4 +1,9 @@
+import Events from 'events';
+
 import TodoService from '../services/TodoService';
+
+const Channel = new Events.EventEmitter(),
+    CHANGE_EVENT = 'change';
 
 let _todoList = [];
 
@@ -42,3 +47,23 @@ function clearAll(){
 }
 
 
+
+const TodoStore = {
+    async getAll(){
+        if(_todoList.length === 0){
+            _todoList = await TodoService.getAll();
+        }
+        return _todoList;
+    },
+    emitChange(){
+        Channel.emit(CHANGE_EVENT);
+    },
+    addChangeListener(callback){
+        Channel.on(CHANGE_EVENT, callback);
+    },
+    removeChangeListener(callback){
+        Channel.removeListener(CHANGE_EVENT, callback);
+    }
+}
+
+export default TodoStore;
