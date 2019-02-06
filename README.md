@@ -1,5 +1,5 @@
 
-# TreinaWeb: curso ["React - Arquitetura Flux"](https://www.treinaweb.com.br/curso/)
+# TreinaWeb: curso ["React - Trabalhando com Arquitetura Flux"](https://www.treinaweb.com.br/curso/react-trabalhando-com-arquitetura-flux)
 
 
 
